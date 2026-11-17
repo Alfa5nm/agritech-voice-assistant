@@ -67,6 +67,24 @@ test('AI voice requires an active call before creating audio or network resource
   assert.equal(status.textContent,'Connect a phone call first');
 });
 
+test('registered case voice binds backend tools to the authenticated workflow',async t=>{
+  let callbacks,reply,invoked,closed=false,finishClose;
+  const workflowClosed=new Promise(resolve=>finishClose=resolve);
+  const answered=new Promise(resolve=>reply=resolve);
+  const workflow={authorized:()=>true,turn:async()=>undefined,cancel(){},played:async()=>{},invoke:async call=>{invoked=call;return {status:'INCOMPLETE'};},close:async()=>{closed=true;finishClose();}};
+  const server=createServer();
+  const sockets=attachVertex(server,{backend:{openVoice:async(_req,id)=>{assert.equal(id,'test-case');return workflow;}},connect:async cb=>{callbacks=cb;return {close(){},sendClientContent(){},sendToolResponse:reply,sendRealtimeInput(){}};}});
+  server.listen(0,'127.0.0.1');await once(server,'listening');
+  t.after(async()=>{for(const socket of sockets.clients)socket.terminate();sockets.close();await new Promise(resolve=>server.close(resolve));});
+  const host='127.0.0.1:'+server.address().port;
+  const ws=new WebSocket('ws://'+host+'/vertex?case=test-case',{origin:'http://'+host});
+  await once(ws,'message');
+  callbacks.onmessage({toolCall:{functionCalls:[{id:'tool-1',name:'case_status',args:{}}]}});
+  assert.deepEqual(await answered,{functionResponses:[{id:'tool-1',name:'case_status',response:{status:'INCOMPLETE'}}]});
+  assert.equal(invoked.name,'case_status');
+  ws.close();await workflowClosed;assert.equal(closed,true);
+});
+
 test('AI voice routes both audio directions, interrupts playback and restores the microphone on stop',async t=>{
   let socket,node,context,playbackStops=0,contextClosed=0;
   const microphone={kind:'audio'},generated={},replaced=[],sent=[];

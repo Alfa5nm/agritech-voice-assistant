@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agritech operator</title>
+<style>body{font:17px system-ui;max-width:1000px;margin:32px auto;padding:0 20px;color:#18392f;background:#f3f6f4}section,details{padding:20px;background:white;border:1px solid #ccd9d1;border-radius:10px;margin:16px 0}label{display:block;margin:12px 0}input,textarea,select,button{font:inherit;padding:9px;max-width:100%;box-sizing:border-box}input:not([type=checkbox]),textarea,select{display:block;width:100%}button{margin:5px;cursor:pointer}pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:500px;overflow:auto}a{color:#146b48}.notice{background:#fff2c9;padding:12px}article{border-top:1px solid #ccc;padding:12px 0}small{display:block}</style>
+<h1>Agritech operator</h1>
+<p class="notice">Research demonstration. Gemini Live controls its spoken output. Do not rely on this system for treatment, diagnosis or chemical dosing. A referral request is not an appointment.</p>
+<p><a href="/">Telephone tester</a></p><p id="status" role="status" aria-live="polite">Checking configuration…</p>
+<section><h2>Operator sign-in</h2>
+<form id="login"><label>Email<input id="email" type="email" required autocomplete="email"></label><button>Send sign-in email</button></form>
+<form id="verify"><label>Verification code or sign-in link from your email<input id="code" type="password" required autocomplete="off"></label><button>Verify sign-in</button></form>
+<button id="logout">Sign out</button></section>
+<section><h2>Registration and current case</h2>
+<label><input id="consent" type="checkbox"> The caller agreed to storing their profile and case for this research test.</label>
+<button id="new-case">Create new case</button><button id="refresh">Refresh cases</button>
+<label>Case<select id="cases"><option value="">Select a case</option></select></label>
+<p><a id="call-link" href="/">Open telephone tester for selected case</a></p>
+<p>The phone number is a profile link, not proof of identity. Registration facts are collected and read back in the voice conversation.</p>
+<label>Phone for profile lookup<input id="phone" inputmode="tel" autocomplete="off" placeholder="+8801…"></label><button id="lookup">Find candidate profile IDs</button><pre id="candidates"></pre>
+<label><input id="identity" type="checkbox"> I independently verified which person is speaking before accessing previous information.</label>
+<button id="verify-identity">Record operator verification</button>
+<label>Verified profile ID<input id="profile-id" autocomplete="off"></label><button id="history">Load verified profile</button><pre id="profile"></pre>
+<button id="bind-profile">Use verified profile for this new case</button>
+<h3>Case details and fact provenance</h3><pre id="state">No case selected.</pre>
+<button id="close-case">Mark case resolved after operator review</button>
+</section>
+<section><h2>Knowledge search</h2>
+<label>Research query<textarea id="query" rows="2" placeholder="ধানের পাতায় দাগ"></textarea></label>
+<label><input id="research" type="checkbox" checked> Research search (may include unapproved material; never use it as caller guidance)</label>
+<button id="search">Search sources</button><pre id="results"></pre><button id="coverage">Show collection coverage</button><pre id="coverage-result"></pre>
+</section>
+<section><h2>Bangladesh source catalog and collection</h2>
+<button id="sources">Load registered publishers</button><label>Publisher<select id="source"></select></label><pre id="source-status"></pre>
+<label>Collection mode<select id="ingest-mode"><option value="catalog">Metadata catalog only</option><option value="collect">Collect permitted documents and pending passages</option></select></label>
+<label>Maximum documents this run<input id="ingest-limit" type="number" min="1" max="100" value="10"></label><button id="ingest">Run bounded collection</button><button id="embed">Embed next 50 passages</button>
+<label>Job ID<input id="job-id" readonly></label><button id="job-status">Refresh job status</button><pre id="job-result"></pre>
+<details><summary>Record source reuse permission</summary><p>Being publicly readable does not establish permission to reproduce or train on a source. Record the actual permission or license basis.</p>
+<label>Reuse status<select id="reuse-status"><option value="unknown">Unknown</option><option value="permitted">Permitted</option><option value="restricted">Restricted</option></select></label><label>Permission evidence or license URL<textarea id="reuse-basis" minlength="10"></textarea></label><button id="save-permission">Record reuse decision</button></details>
+</section>
+<section><h2>Agronomy review queue</h2><p>Only a separately authorized agronomy reviewer can approve source-linked guidance. Source reuse permission must be recorded first.</p>
+<button id="review-queue">Load pending passages</button><div id="queue"></div>
+<form id="review"><label>Passage ID<input id="chunk-id" required></label><label>Decision<select id="decision"><option value="APPROVED">Approve</option><option value="REVOKED">Revoke</option></select></label>
+<label>Crop<input id="crop" value="rice" required></label><label>Growth stage (blank means general)<input id="stage"></label><label>District (blank means nationwide)<input id="district"></label>
+<label>Valid until (required for time-sensitive advisories)<input id="valid-until" type="datetime-local"></label><label>Review rationale and allowed use<textarea id="note" minlength="10" required></textarea></label><button>Record reviewed decision</button></form>
+</section>
+<section><h2>Local Bangla model research</h2><p>Student models run in local batch tests. Generated teacher examples require human review before training. They do not replace the live voice model.</p><button id="research-reports">Load evaluation reports</button><pre id="reports"></pre></section>
+<script type="module" src="/operator.js"></script></html>

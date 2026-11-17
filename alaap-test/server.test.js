@@ -17,4 +17,8 @@ test('TURN credentials are available only to the local tester and environment fi
   assert.equal(response.status,200);assert.equal(response.headers.get('cache-control'),'no-store');
   const {iceServers}=await response.json();assert.equal(iceServers[0].credential,'test-password');
   assert.equal((await fetch(base+'/.env.local')).status,404);
+  assert.equal((await fetch(base+'/operator.html')).status,200);
+  assert.equal((await fetch(base+'/api/cases')).status,401);
+  assert.equal((await fetch(base+'/api/config',{headers:{'Sec-Fetch-Site':'cross-site'}})).status,400);
+  assert.equal((await fetch(base+'/api/auth/start',{method:'POST',headers:{Origin:'https://other.example','Content-Type':'application/json'},body:'{}'})).status,400);
 });

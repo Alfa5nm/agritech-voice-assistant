@@ -32,9 +32,11 @@ The server binds to loopback only. Google credentials remain on the server. Phon
 
 ## Status and intended product
 
+The registration, fact-confirmation, reviewed-retrieval and Bangla-model research implementation is described in [the implementation and operator guide](docs/IMPLEMENTATION.md). Open http://127.0.0.1:8765/operator.html for authenticated case and source operations. Applying database migrations and supplying reviewed content/training data are required before the full workflow can be validated.
+
 Working prototype capabilities include incoming call handling, a Vertex Live audio bridge and transcripts, local Bangla speech-model comparison, and a small scripted clarification flow. Phone audio quality, dialect comprehension and latency need further evaluation across speakers and devices.
 
-The intended product adds farmer and crop history, specialist-reviewed agricultural knowledge, structured fact confirmation, deterministic advice checks, expert referrals, Bengali SMS summaries, and consent-based follow-up. These features are not yet implemented. The current voice model's prompt restrictions are not a validated agricultural safety system; do not rely on the prototype for diagnosis or chemical dosing.
+The backend now implements operator-scoped encrypted profiles, case fact proposals and confirmations, source catalog/collection, filtered keyword/vector retrieval, reviewer operations and referral requests. Specialist-reviewed content and student-model training remain pending. Bengali SMS, expert assignment, consented callback jobs and guaranteed approval of every spoken sentence are not implemented. The current voice model's prompt restrictions are not a validated agricultural safety system; do not rely on the prototype for diagnosis or chemical dosing.
 
 ## Tests
 

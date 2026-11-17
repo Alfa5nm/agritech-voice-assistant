@@ -2,10 +2,13 @@ import {createServer} from 'node:http';
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {randomUUID} from 'node:crypto';
 import {attachVertex} from './vertex.js';
+import {createBackend} from './backend/api.js';
 try{process.loadEnvFile(new URL('.env.local',import.meta.url));}catch(error){if(error.code!=='ENOENT')throw error;}
-const files={'/':'index.html','/app.js':'app.js','/client.js':'client.js','/voice.js':'voice.js','/bangla.js':'bangla.js','/bangla-pcm.js':'bangla-pcm.js','/bangla-dialogue.js':'bangla-dialogue.js','/bangla-prompts.json':'bangla-prompts.json','/bangla-reply.mp3':'bangla-reply.mp3'};
+const files={'/':'index.html','/operator.html':'operator.html','/operator.js':'operator.js','/app.js':'app.js','/client.js':'client.js','/voice.js':'voice.js','/bangla.js':'bangla.js','/bangla-pcm.js':'bangla-pcm.js','/bangla-dialogue.js':'bangla-dialogue.js','/bangla-prompts.json':'bangla-prompts.json','/bangla-reply.mp3':'bangla-reply.mp3'};
 const port=Number(process.env.PORT||8765);
+const backend=createBackend();
 const server=createServer(async(req,res)=>{
+  if(await backend.handle(req,res))return;
   if(req.method==='POST'&&req.url==='/ice-config'){
     const host='127.0.0.1:'+port;
     if(req.headers.host!==host||req.headers.origin!=='http://'+host||req.headers['content-type']!=='application/json')return res.writeHead(403).end('Open the local tester directly');
@@ -60,7 +63,8 @@ const server=createServer(async(req,res)=>{
       return res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'}).end(await result.text());
     }catch{return res.writeHead(502).end('Local Bangla worker unavailable');}
   }
-  const file=files[req.url]||(/^\/bangla-prompts\/[a-z]+\.mp3$/.test(req.url)?req.url.slice(1):null);
+  const pathname=new URL(req.url,'http://localhost').pathname;
+  const file=files[pathname]||(/^\/bangla-prompts\/[a-z]+\.mp3$/.test(req.url)?req.url.slice(1):null);
   if(req.method!=='GET'||!file){res.writeHead(404).end();return;}
   try{
     const body=await readFile(new URL(file,import.meta.url));
@@ -68,5 +72,5 @@ const server=createServer(async(req,res)=>{
     res.writeHead(200,{'Content-Type':type,'Cache-Control':'no-store','Referrer-Policy':'no-referrer','Content-Security-Policy':`default-src 'self'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self' ws://127.0.0.1:${port} wss://ippbx.alaapcloud.gov.bd:4321; media-src 'self' blob:; frame-ancestors 'none'`}).end(body);
   }catch{res.writeHead(500).end('Unable to load client');}
 });
-attachVertex(server);
+attachVertex(server,{backend});
 server.listen(port,'127.0.0.1',()=>console.log('Alaap test: http://127.0.0.1:'+port));

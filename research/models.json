@@ -1,0 +1,25 @@
+{
+  "banglabert": {
+    "id": "csebuetnlp/banglabert_small",
+    "revision": "a9507c8f05866c6786f4fbfeeb582f72c90d6ba1",
+    "task": "extract",
+    "training": "full",
+    "license": "CC-BY-NC-SA-4.0; non-commercial research only"
+  },
+  "banglat5": {
+    "id": "csebuetnlp/banglat5_small",
+    "revision": "5710e9754346bbe1ac7ff64b3e04a1beee89be63",
+    "task": "normalize",
+    "training": "full",
+    "license": "CC-BY-NC-SA-4.0; non-commercial research only"
+  },
+  "banglallama": {
+    "id": "BanglaLLM/BanglaLLama-3.2-1b-bangla-alpaca-orca-instruct-v0.0.1",
+    "revision": "21f9d13512218a6060e95cacad21bb91b80828a9",
+    "task": "extract",
+    "training": "lora",
+    "license": "Check the checkpoint card and inherited Llama 3.2 terms before use; never auto-accept gated access",
+    "baseId": "BanglaLLM/BanglaLLama-3.2-1b-unolp-culturax-base-v0.0.1",
+    "baseRevision": "4f9913f8a90169b8027cd6362d5d9d63d30e5038"
+  }
+}

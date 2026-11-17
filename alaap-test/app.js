@@ -2,6 +2,8 @@ import {AlaapClient,diagnostic} from './client.js';
 import {startVoice} from './voice.js';
 import {captureBangla,listenBangla} from './bangla.js';
 const $=id=>document.getElementById(id),entries=[];
+const activeCase=new URLSearchParams(location.search).get('case');
+$('case-context').textContent=activeCase?'Registration case: '+activeCase:'Voice-only mode. Create and select a case in the operator page to enable persistent registration and fact confirmation.';
 function log(entry){entries.push(entry);if(entries.length>1000)entries.shift();$('log').textContent=entries.map(e=>JSON.stringify(e)).join('\n');$('log').scrollTop=$('log').scrollHeight;}
 const client=new AlaapClient({log,status:text=>{$('status').textContent=text;$('connect').disabled=!!client.socket;},audio:$('audio'),microphone:()=>$('microphone').value,autoAnswer:()=>$('auto').checked});
 $('credentials').onsubmit=async e=>{e.preventDefault();try{const response=await fetch('/ice-config',{method:'POST',headers:{'Content-Type':'application/json'}});if(!response.ok)throw new Error(await response.text());client.iceServers=(await response.json()).iceServers;await client.connect({token:$('token').value,extension:$('extension').value.trim(),domain:$('domain').value.trim(),password:$('password').value});}catch(error){$('status').textContent=error.message;}finally{$('token').value='';$('password').value='';}};
@@ -12,7 +14,7 @@ $('download').onclick=()=>{const url=URL.createObjectURL(new Blob([entries.map(e
 window.addEventListener('beforeunload',()=>client.disconnect());
 $('start-voice').onclick=()=>{
   if(client.call?.stopBangla){$('voice-status').textContent='Wait for the local Bangla test to finish';return;}
-  startVoice(client.call,$('audio'),$('voice-status'),$('transcript'));
+  startVoice(client.call,$('audio'),$('voice-status'),$('transcript'),{caseId:new URLSearchParams(location.search).get('case')});
 };
 $('stop-voice').onclick=()=>client.call?.stopVoice?.();
 $('bangla-start').onclick=()=>captureBangla(client.call,$('audio'),$('bangla-status'),$('bangla-results'),$('bangla-finish'));

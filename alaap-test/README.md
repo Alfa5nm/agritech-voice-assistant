@@ -1,5 +1,7 @@
 # Alaap incoming-call test
 
+For persistent registration, fact confirmation, Supabase setup, agricultural source collection and local model experiments, see [the implementation guide](../docs/IMPLEMENTATION.md). The authenticated operator console is http://127.0.0.1:8765/operator.html. Select a consented case there before opening the telephone tester to enable backend tools.
+
 Requires Node.js 22 or newer and Chrome or Edge. Run `npm install` once for the Vertex AI voice bridge.
 
 1. In this folder run `node server.mjs`, then open http://127.0.0.1:8765.
@@ -32,7 +34,7 @@ Alaap access tokens and SIP passwords are entered in the browser at connection t
 
 Restart `node server.mjs` after changing configuration. With the caller's agreement, click **Start AI voice** during a connected phone call. Caller audio streams through the local `/vertex` WebSocket to Google Cloud, and generated speech is sent back to the phone. The main **Live transcript from Vertex AI** panel displays caller and AI captions directly from Vertex. Local Whisper results are kept separately under the collapsed **Whisper comparison (optional)** section. **Stop AI voice** restores the laptop microphone; hanging up closes the Vertex session. One AI session is allowed at a time, with a ten-minute test limit. No caller audio or captions are saved by this bridge. Google Cloud usage is billed to the selected project; vendor retention is separate from local storage.
 
-This is an experimental voice conversation, without reviewed agricultural knowledge, real expert referrals or SMS. Do not treat its output as validated agricultural advice. Dialect accuracy, interruptions and phone-to-phone response delay need live testing.
+This is an experimental voice conversation. Case-linked sessions can propose and confirm facts, retrieve approved evidence and record referral requests. Reviewed agricultural content, actual expert appointments and SMS are not supplied automatically. Do not treat output as validated agricultural advice. Dialect accuracy, interruptions and phone-to-phone response delay need live testing.
 
 If registration fails, verify token expiry, extension/password, the supplied realm, and possible use of the shared test extension by someone else. The realm need not resolve locally when an explicit SIP proxy routes registration. Do not substitute the proxy IP as the realm without provider confirmation or protocol evidence.
 

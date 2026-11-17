@@ -12,7 +12,7 @@ export function decodePcm(data){
   return samples;
 }
 
-export async function startVoice(call,audio,status,transcript){
+export async function startVoice(call,audio,status,transcript,{caseId=null}={}){
   if(call?.stopVoice)return;
   const stream=audio.srcObject;
   const sender=call?.pc?.getSenders().find(s=>s.track?.kind==='audio');
@@ -21,10 +21,11 @@ export async function startVoice(call,audio,status,transcript){
   }
   const microphone=sender.track,context=new AudioContext({sampleRate:16000});
   const sources=new Set(),lines=[];
-  let socket,node,input,stopped=false,ready=false,nextTime=0,lastSpeaker='';
+  let socket,node,input,stopped=false,ready=false,nextTime=0,lastSpeaker='',playedTurn=null;
+  const acknowledge=()=>{if(playedTurn&&!sources.size&&ready&&socket.readyState===1){socket.send(JSON.stringify({type:'played',turnId:playedTurn}));playedTurn=null;}};
   const flush=()=>{
     for(const source of sources){source.onended=null;try{source.stop();}catch{}source.disconnect();}
-    sources.clear();nextTime=context.currentTime;
+    sources.clear();playedTurn=null;nextTime=context.currentTime;
   };
   const stop=(message='Vertex AI voice stopped')=>{
     if(stopped)return;
@@ -46,7 +47,7 @@ export async function startVoice(call,audio,status,transcript){
     if(stopped)return;
     const destination=context.createMediaStreamDestination();
     node=new AudioWorkletNode(context,'phone-pcm');
-    socket=new WebSocket('ws://'+location.host+'/vertex');
+    socket=new WebSocket('ws://'+location.host+'/vertex'+(caseId?'?case='+encodeURIComponent(caseId):''));
     node.port.onmessage=({data})=>{
       if(!ready||stopped||socket.readyState!==1)return;
       if(socket.bufferedAmount>64000){stop('Vertex upload fell behind; restart AI voice');return;}
@@ -65,6 +66,8 @@ export async function startVoice(call,audio,status,transcript){
           ready=true;status.textContent='Vertex AI voice connected';
         }
         if(message.interrupted)flush();
+        if(message.workflowError)status.textContent=message.workflowError;
+        if(message.assistantTurnId){playedTurn=message.assistantTurnId;acknowledge();}
         caption('Caller',message.input);caption('AI',message.output);
         for(const audio of message.audio||[]){
           const samples=decodePcm(audio.data);
@@ -74,7 +77,7 @@ export async function startVoice(call,audio,status,transcript){
           const source=context.createBufferSource();source.buffer=buffer;source.connect(destination);
           nextTime=Math.max(context.currentTime,nextTime);
           if(nextTime-context.currentTime>30)throw new Error('Audio playback fell behind');
-          sources.add(source);source.onended=()=>{sources.delete(source);source.disconnect();};
+          sources.add(source);source.onended=()=>{sources.delete(source);source.disconnect();acknowledge();};
           source.start(nextTime);nextTime+=buffer.duration;
         }
         if(message.turnComplete)lastSpeaker='';

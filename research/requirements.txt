@@ -1,0 +1,9 @@
+torch>=2.6,<3
+transformers>=4.45,<5
+peft>=0.17,<1
+sentencepiece>=0.2,<1
+protobuf>=5,<8
+pypdf>=5,<7
+numpy>=1.26,<3
+accelerate>=1,<2
+git+https://github.com/csebuetnlp/normalizer.git@d405944dde5ceeacb7c2fd3245ae2a9dea5f35c9

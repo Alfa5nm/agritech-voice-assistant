@@ -1,0 +1,81 @@
+[
+  {
+    "id": "bamis",
+    "publisher": "Bangladesh Agro-Meteorological Information Service",
+    "url": "https://www.bamis.gov.bd/bn/",
+    "allowed_hosts": [
+      "www.bamis.gov.bd",
+      "bamis.gov.bd"
+    ],
+    "reuse_status": "unknown",
+    "reuse_basis": null
+  },
+  {
+    "id": "brri",
+    "publisher": "Bangladesh Rice Research Institute",
+    "url": "https://riceprofile.brri.gov.bd/index.php/cultivation",
+    "allowed_hosts": [
+      "riceprofile.brri.gov.bd",
+      "brri.gov.bd",
+      "www.brri.gov.bd"
+    ],
+    "reuse_status": "unknown",
+    "reuse_basis": null
+  },
+  {
+    "id": "bari",
+    "publisher": "Bangladesh Agricultural Research Institute",
+    "url": "https://bari.gov.bd/pages/static-pages/6922dd2a933eb65569e13c23",
+    "allowed_hosts": [
+      "bari.gov.bd",
+      "www.bari.gov.bd"
+    ],
+    "reuse_status": "unknown",
+    "reuse_basis": null
+  },
+  {
+    "id": "dae",
+    "publisher": "Department of Agricultural Extension",
+    "url": "https://dae.gov.bd/",
+    "allowed_hosts": [
+      "dae.gov.bd",
+      "www.dae.gov.bd"
+    ],
+    "reuse_status": "unknown",
+    "reuse_basis": null
+  },
+  {
+    "id": "ais",
+    "publisher": "Agriculture Information Service",
+    "url": "https://ais.gov.bd/",
+    "allowed_hosts": [
+      "ais.gov.bd",
+      "www.ais.gov.bd"
+    ],
+    "reuse_status": "unknown",
+    "reuse_basis": null
+  },
+  {
+    "id": "bmd",
+    "publisher": "Bangladesh Meteorological Department",
+    "url": "https://bmd.gov.bd/",
+    "allowed_hosts": [
+      "bmd.gov.bd",
+      "www.bmd.gov.bd",
+      "server8.bmd.gov.bd"
+    ],
+    "reuse_status": "unknown",
+    "reuse_basis": null
+  },
+  {
+    "id": "srdi",
+    "publisher": "Soil Resource Development Institute",
+    "url": "https://srdi.gov.bd/",
+    "allowed_hosts": [
+      "srdi.gov.bd",
+      "www.srdi.gov.bd"
+    ],
+    "reuse_status": "unknown",
+    "reuse_basis": null
+  }
+]

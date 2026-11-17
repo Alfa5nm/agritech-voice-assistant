@@ -15,3 +15,8 @@
 *.mp4
 *.wav
 *.log
+**/.research-venv/
+/research/private/
+/research/models/
+/research/reports/
+/research/data/*.jsonl
