@@ -1,0 +1,7 @@
+.bangla-venv/
+bangla-reply.mp3
+bangla-prompts/
+qa/captures/
+__pycache__/
+node_modules/
+.env.local

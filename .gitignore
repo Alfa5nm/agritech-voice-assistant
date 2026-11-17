@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+**/.secrets/
+**/*service-account*.json
+**/application_default_credentials.json
+**/node_modules/
+**/.bangla-venv/
+**/__pycache__/
+**/qa/
+**/QA-REPORT.md
+**/bangla-prompts/
+**/bangla-reply.mp3
+/Documentation/
+*.mp4
+*.wav
+*.log

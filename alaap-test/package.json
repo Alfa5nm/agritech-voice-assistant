@@ -1,0 +1,1 @@
+{"private":true,"type":"module","scripts":{"start":"node server.mjs","test":"node --test"},"dependencies":{"@google/genai":"^3.4.0","ws":"^8.23.0"}}
