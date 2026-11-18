@@ -1,7 +1,7 @@
 class PhonePcm extends AudioWorkletProcessor{
   constructor(){
     super();
-    this.block=new Float32Array(2048);
+    this.block=new Float32Array(512);
     this.offset=0;
   }
   process(inputs){
@@ -11,7 +11,7 @@ class PhonePcm extends AudioWorkletProcessor{
       this.block[this.offset++]=sample;
       if(this.offset===this.block.length){
         this.port.postMessage(this.block,[this.block.buffer]);
-        this.block=new Float32Array(2048);
+        this.block=new Float32Array(512);
         this.offset=0;
       }
     }

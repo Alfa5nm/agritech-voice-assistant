@@ -2,6 +2,7 @@
 <style>body{font:17px system-ui;background:#f3f6f4;color:#18392f;max-width:850px;margin:32px auto;padding:0 20px}section{background:white;border:1px solid #ccd9d1;border-radius:12px;padding:20px;margin:18px 0}label{display:block;margin:12px 0}input:not([type=checkbox]),select{display:block;box-sizing:border-box;width:100%;padding:9px;font:inherit}button{padding:10px 16px;margin:5px;font:inherit;cursor:pointer}pre{white-space:pre-wrap;max-height:340px;overflow:auto;font-size:13px}audio{width:100%}#status{font-weight:bold}</style>
 <h1>Alaap telephone connection test</h1><p>Call the test DID supplied by your provider. Use headphones. This client handles one incoming call at a time.</p>
 <p><a href="/operator.html">Operator: registration, case facts and knowledge review</a></p><p id="case-context"></p>
+<p><a href="/workspace.html">Open the live voice workspace ↗</a></p>
 <section><h2>Provider connection</h2><form id="credentials" autocomplete="off">
 <label>Access token<input id="token" type="password" required autocomplete="off"></label>
 <label>SIP extension<input id="extension" placeholder="Your SIP extension" required inputmode="numeric"></label>
@@ -13,14 +14,15 @@
 <label><input id="auto" type="checkbox"> Enable automatic answering of incoming calls</label>
 <button id="hangup">Hang up</button><button id="play">Play incoming audio</button><audio id="audio" controls autoplay></audio>
 <p>Allow microphone access when prompted. Keep this page open. Change the selected microphone between calls.</p></section>
-<section><h2>Live conversation with Vertex AI</h2><p>Start during an active test call after the caller agrees to send their speech to Google Cloud Vertex AI.</p>
+<section><h2>Live conversation with Google AI</h2><p>Start during an active test call after the caller agrees to send their speech to Google. Vertex AI is the default.</p>
+<label><input id="gemini-test" type="checkbox" autocomplete="off"> Use Gemini Developer API for a synthetic test only. Google may use free-tier content to improve its products. Do not share personal farmer details.</label>
 <button id="start-voice">Start AI voice</button><button id="stop-voice">Stop AI voice</button>
-<p id="voice-status" role="status"></p><h3>Live transcript from Vertex AI</h3>
-<p>Caller and AI captions come directly from Vertex AI during this conversation.</p>
-<pre id="transcript" aria-label="Vertex AI live conversation transcript"></pre></section>
+<p id="voice-status" role="status"></p><h3>Live transcript from Google AI</h3>
+<p>Caller and AI captions come directly from the selected Google voice model during this conversation.</p>
+<pre id="transcript" aria-label="Google AI live conversation transcript"></pre></section>
 <details><summary>Whisper comparison (optional)</summary>
 <section><h2>Local Whisper comparison</h2>
-<p>These comparison results are separate from the live Vertex AI transcript above.</p>
+<p>These comparison results are separate from the live Google AI transcript above.</p>
 <p>With the caller's agreement, capture one short utterance. Both models transcribe the same clip locally. The phone hears a scripted Bangla reply.</p>
 <button id="bangla-start">Capture Bangla speech</button><button id="bangla-finish" disabled>Finish utterance</button>
 <button id="bangla-auto">Start hands-free Bangla</button><button id="bangla-stop">Stop Bangla test</button>

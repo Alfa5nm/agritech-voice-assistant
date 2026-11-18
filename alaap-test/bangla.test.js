@@ -2,6 +2,23 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {collectTurns} from './bangla.js';
 import {nextBanglaQuestion} from './bangla-dialogue.js';
+import {readFileSync} from 'node:fs';
+import {runInNewContext} from 'node:vm';
+
+test('phone audio streams every 32 ms without dropping samples between blocks',()=>{
+  let Processor;const blocks=[];
+  runInNewContext(readFileSync(new URL('./bangla-pcm.js',import.meta.url),'utf8'),{
+    AudioWorkletProcessor:class{constructor(){this.port={postMessage:block=>blocks.push([...block])};}},
+    registerProcessor:(_name,value)=>Processor=value,
+  });
+  const processor=new Processor();
+  for(let offset=0;offset<1024;offset+=128){
+    processor.process([[Float32Array.from({length:128},(_,i)=>(offset+i)/1024)]]);
+    assert.equal(blocks.length,Math.floor((offset+128)/512));
+  }
+  assert.deepEqual(blocks.flat(),Array.from({length:1024},(_,i)=>i/1024));
+  assert.equal(processor.process([]),true);
+});
 
 test('Chatgaiya audibility checks confirm the intent without changing crop context',()=>{
   for(const cleaned of [

@@ -5,6 +5,8 @@ import {attachVertex} from './vertex.js';
 import {createBackend} from './backend/api.js';
 try{process.loadEnvFile(new URL('.env.local',import.meta.url));}catch(error){if(error.code!=='ENOENT')throw error;}
 const files={'/':'index.html','/operator.html':'operator.html','/operator.js':'operator.js','/app.js':'app.js','/client.js':'client.js','/voice.js':'voice.js','/bangla.js':'bangla.js','/bangla-pcm.js':'bangla-pcm.js','/bangla-dialogue.js':'bangla-dialogue.js','/bangla-prompts.json':'bangla-prompts.json','/bangla-reply.mp3':'bangla-reply.mp3'};
+Object.assign(files,{'/workspace.html':'workspace.html','/workspace.css':'workspace.css','/workspace.js':'workspace.js','/workspace-state.js':'workspace-state.js'});
+files['/speech-guard.js']='speech-guard.js';
 const port=Number(process.env.PORT||8765);
 const backend=createBackend();
 const server=createServer(async(req,res)=>{
@@ -68,8 +70,8 @@ const server=createServer(async(req,res)=>{
   if(req.method!=='GET'||!file){res.writeHead(404).end();return;}
   try{
     const body=await readFile(new URL(file,import.meta.url));
-    const type=file.endsWith('.mp3')?'audio/mpeg':file.endsWith('.json')?'application/json':file.endsWith('.html')?'text/html; charset=utf-8':'text/javascript; charset=utf-8';
-    res.writeHead(200,{'Content-Type':type,'Cache-Control':'no-store','Referrer-Policy':'no-referrer','Content-Security-Policy':`default-src 'self'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self' ws://127.0.0.1:${port} wss://ippbx.alaapcloud.gov.bd:4321; media-src 'self' blob:; frame-ancestors 'none'`}).end(body);
+    const type=file.endsWith('.mp3')?'audio/mpeg':file.endsWith('.json')?'application/json':file.endsWith('.css')?'text/css; charset=utf-8':file.endsWith('.html')?'text/html; charset=utf-8':'text/javascript; charset=utf-8';
+    res.writeHead(200,{'Content-Type':type,'Cache-Control':'no-store','Referrer-Policy':'no-referrer','Content-Security-Policy':`default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws://127.0.0.1:${port} wss://ippbx.alaapcloud.gov.bd:4321; media-src 'self' blob:; frame-ancestors 'none'`}).end(body);
   }catch{res.writeHead(500).end('Unable to load client');}
 });
 attachVertex(server,{backend});

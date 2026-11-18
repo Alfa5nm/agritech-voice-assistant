@@ -15,6 +15,7 @@
 *.mp4
 *.wav
 *.log
+~$*.docx
 **/.research-venv/
 /research/private/
 /research/models/

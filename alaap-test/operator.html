@@ -4,16 +4,18 @@
 <style>body{font:17px system-ui;max-width:1000px;margin:32px auto;padding:0 20px;color:#18392f;background:#f3f6f4}section,details{padding:20px;background:white;border:1px solid #ccd9d1;border-radius:10px;margin:16px 0}label{display:block;margin:12px 0}input,textarea,select,button{font:inherit;padding:9px;max-width:100%;box-sizing:border-box}input:not([type=checkbox]),textarea,select{display:block;width:100%}button{margin:5px;cursor:pointer}pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:500px;overflow:auto}a{color:#146b48}.notice{background:#fff2c9;padding:12px}article{border-top:1px solid #ccc;padding:12px 0}small{display:block}</style>
 <h1>Agritech operator</h1>
 <p class="notice">Research demonstration. Gemini Live controls its spoken output. Do not rely on this system for treatment, diagnosis or chemical dosing. A referral request is not an appointment.</p>
-<p><a href="/">Telephone tester</a></p><p id="status" role="status" aria-live="polite">Checking configuration…</p>
+<p><a href="/workspace.html">Live workspace</a> · <a href="/">Advanced telephone tester</a></p><p id="status" role="status" aria-live="polite">Checking configuration…</p>
 <section><h2>Operator sign-in</h2>
 <form id="login"><label>Email<input id="email" type="email" required autocomplete="email"></label><button>Send sign-in email</button></form>
-<form id="verify"><label>Verification code or sign-in link from your email<input id="code" type="password" required autocomplete="off"></label><button>Verify sign-in</button></form>
+<form id="verify"><label>Verification code, email sign-in link, or full localhost callback URL<input id="code" type="password" required autocomplete="off"></label><button>Verify sign-in</button></form>
+<p>If the email link opens localhost:3000, copy its full address into the field above. Do not paste authentication links into chat.</p>
 <button id="logout">Sign out</button></section>
 <section><h2>Registration and current case</h2>
 <label><input id="consent" type="checkbox"> The caller agreed to storing their profile and case for this research test.</label>
+<label><input id="synthetic" type="checkbox"> Synthetic registration test: use fictional details only. This allows Gemini Developer API, whose free-tier content may be used to improve Google products.</label>
 <button id="new-case">Create new case</button><button id="refresh">Refresh cases</button>
 <label>Case<select id="cases"><option value="">Select a case</option></select></label>
-<p><a id="call-link" href="/">Open telephone tester for selected case</a></p>
+<p><a id="call-link" href="/workspace.html">Open live workspace for selected case</a></p>
 <p>The phone number is a profile link, not proof of identity. Registration facts are collected and read back in the voice conversation.</p>
 <label>Phone for profile lookup<input id="phone" inputmode="tel" autocomplete="off" placeholder="+8801…"></label><button id="lookup">Find candidate profile IDs</button><pre id="candidates"></pre>
 <label><input id="identity" type="checkbox"> I independently verified which person is speaking before accessing previous information.</label>

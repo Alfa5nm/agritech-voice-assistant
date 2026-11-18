@@ -18,7 +18,14 @@ test('TURN credentials are available only to the local tester and environment fi
   const {iceServers}=await response.json();assert.equal(iceServers[0].credential,'test-password');
   assert.equal((await fetch(base+'/.env.local')).status,404);
   assert.equal((await fetch(base+'/operator.html')).status,200);
+  assert.equal((await fetch(base+'/workspace.html')).status,200);
+  const css=await fetch(base+'/workspace.css');assert.match(css.headers.get('content-type'),/text\/css/);assert.equal(css.status,200);
+  const workspace=await fetch(base+'/workspace.js');assert.match(workspace.headers.get('content-security-policy'),/style-src 'self'/);assert.equal(workspace.status,200);
+  assert.equal((await fetch(base+'/api/cases/aaaaaaaa-0000-4000-8000-000000000001/workspace')).status,401);
   assert.equal((await fetch(base+'/api/cases')).status,401);
+  assert.equal((await fetch(base+'/api/telephone',{method:'POST',headers:{Origin:base,'Content-Type':'application/json'},body:'{}'})).status,401);
+  assert.equal((await fetch(base+'/.secrets/operator-sessions')).status,404);
   assert.equal((await fetch(base+'/api/config',{headers:{'Sec-Fetch-Site':'cross-site'}})).status,400);
   assert.equal((await fetch(base+'/api/auth/start',{method:'POST',headers:{Origin:'https://other.example','Content-Type':'application/json'},body:'{}'})).status,400);
+  assert.equal((await fetch(base+'/api/auth/callback',{method:'POST',headers:{Origin:'https://other.example','Content-Type':'application/json'},body:'{"accessToken":"untrusted"}'})).status,400);
 });

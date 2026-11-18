@@ -1,4 +1,7 @@
 const $=id=>document.getElementById(id);
+let callbackToken=new URLSearchParams(location.hash.slice(1)).get('access_token');
+let callbackRefresh=new URLSearchParams(location.hash.slice(1)).get('refresh_token');
+if(location.hash)history.replaceState(null,'',location.pathname+location.search);
 async function api(path,body){
   const response=await fetch('/api/'+path,body===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   const result=await response.json();if(!response.ok)throw new Error(result.error||'Request failed');return result;
@@ -12,13 +15,13 @@ async function cases(){
 async function current(){
   const id=$('cases').value;if(!id)return;
   const state=await api('cases/'+id);$('state').textContent=JSON.stringify(state,null,2);
-  $('call-link').href='/?case='+encodeURIComponent(id);
+  $('call-link').href='/workspace.html?case='+encodeURIComponent(id)+(state.metadata.synthetic?'&synthetic=1':'');
   $('status').textContent='Persistent case loaded. Unconfirmed facts remain proposals.';
 }
 $('login').onsubmit=run(async()=>{await api('auth/start',{email:$('email').value});$('status').textContent='Check your email. Enter the verification code or copy the sign-in link into the field below.';});
-$('verify').onsubmit=run(async()=>{await api('auth/verify',{email:$('email').value,code:$('code').value});$('code').value='';$('status').textContent='Signed in as an Agritech operator.';await cases();});
+$('verify').onsubmit=run(async()=>{const code=$('code').value;$('code').value='';await api('auth/verify',{email:$('email').value,code});$('status').textContent='Signed in as an Agritech operator.';await cases();});
 $('logout').onclick=run(async()=>{await api('auth/logout',{});$('state').textContent='Signed out.';$('profile').textContent='';$('candidates').textContent='';$('cases').replaceChildren(new Option('Select a case',''));$('status').textContent='Signed out. Stop any active AI call before leaving this computer.';});
-$('new-case').onclick=run(async()=>{const state=await api('cases',{storageConsent:$('consent').checked});await cases();$('cases').value=state.id;await current();$('consent').checked=false;});
+$('new-case').onclick=run(async()=>{const state=await api('cases',{storageConsent:$('consent').checked,synthetic:$('synthetic').checked});await cases();$('cases').value=state.id;await current();$('consent').checked=false;$('synthetic').checked=false;});
 $('refresh').onclick=run(async()=>{await cases();await current();});$('cases').onchange=run(current);
 $('lookup').onclick=run(async()=>{$('candidates').textContent=JSON.stringify(await api('profiles/lookup',{phone:$('phone').value}),null,2);});
 $('verify-identity').onclick=run(async()=>{if(!$('identity').checked)throw new Error('Verify the caller independently before recording this action');if(!$('cases').value||!$('profile-id').value)throw new Error('Select a case and the verified profile ID');await api('cases/'+$('cases').value+'/events',{type:'verify_identity',profileId:$('profile-id').value,id:crypto.randomUUID()});$('identity').checked=false;await current();});
@@ -41,4 +44,4 @@ $('review-queue').onclick=run(async()=>{
 });
 $('review').onsubmit=run(async()=>{await api('knowledge/review',{chunkId:$('chunk-id').value,status:$('decision').value,note:$('note').value,crop:$('crop').value,stage:$('stage').value,district:$('district').value,validUntil:$('valid-until').value?new Date($('valid-until').value).toISOString():null});$('status').textContent='Reviewed decision recorded with reviewer identity.';});
 $('research-reports').onclick=run(async()=>{$('reports').textContent=JSON.stringify(await api('research'),null,2);});
-run(async()=>{const config=await api('config');$('status').textContent=!config.configured?'Database configuration is missing. Voice-only testing is still available.':!config.schemaReady?'Database configured; profile-history migration is required before registration. Source and research tools remain available after sign-in.':'Dedicated database configured. Sign in to work with farmer data.';if(config.signedIn)await cases();})();
+run(async()=>{if(callbackToken){const accessToken=callbackToken;callbackToken=null;const refreshToken=callbackRefresh;callbackRefresh=null;await api('auth/callback',{accessToken,refreshToken:refreshToken||undefined});$('status').textContent='Signed in as an Agritech operator.';await cases();return;}const config=await api('config');$('status').textContent=!config.configured?'Database configuration is missing. Voice-only testing is still available.':!config.schemaReady?'Database configured; profile-history migration is required before registration. Source and research tools remain available after sign-in.':'Dedicated database configured. Sign in to work with farmer data.';if(config.signedIn){$('status').textContent='Signed in as an Agritech operator.';await cases();}})();
